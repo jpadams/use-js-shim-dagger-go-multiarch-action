@@ -1,0 +1,28 @@
+name: Dagger Go SDK Multiarch Build
+
+on:
+  push:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      go-proj-repo:
+        description: 'Repo to build'
+        required: false
+        default: 'https://github.com/kpenfound/greetings-api.git'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set repo to build 
+        id: repo-to-build 
+        run: |
+          USER_INPUT=${{ github.event.inputs.go-proj-repo }}
+          echo "::set-output name=value::${USER_INPUT}"
+
+      - uses: jpadams/js-shim-dagger-go-multiarch-action@main
+        with:
+          go-proj-repo: ${{ steps.repo-to-build.outputs.value }}
